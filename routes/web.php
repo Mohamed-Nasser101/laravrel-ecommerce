@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\SaveToLaterController;
 use App\Http\Controllers\ShopController;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +24,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LandingPageController::class,'index'])->name('landing-page');
 Route::get('/shop', [ShopController::class,'index'])->name('shop.index');
 Route::get('/shop/{product}', [ShopController::class,'show'])->name('shop.show');
+Route::get('/cart', [CartController::class,'index'])->name('cart.index');
+Route::post('/cart', [CartController::class,'store'])->name('cart.store');
+Route::delete('/cart/{product}', [CartController::class,'destroy'])->name('cart.destroy');
+
+Route::post('/cart/SwitchSaveForLater/{product}',[CartController::class,'switchToSave'])->name('cart.forLater');
+
+Route::post('/saveForlater/{product}', [SaveToLaterController::class,'moveToCart'])->name('saveForlater.moveToCart');
+Route::delete('/saveForlater/{product}', [SaveToLaterController::class,'destroy'])->name('saveForlater.destroy');
+
 Route::view('/product', 'product');
-Route::view('/cart', 'cart');
 Route::view('/checkout', 'checkout');
 Route::view('/thankyou', 'thankyou');
