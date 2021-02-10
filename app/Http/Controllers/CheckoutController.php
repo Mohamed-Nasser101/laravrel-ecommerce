@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use Illuminate\Http\Request;
-use Gloudemans\Shoppingcart\Facades\Cart;
 
-class CartController extends Controller
+class CheckoutController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +13,7 @@ class CartController extends Controller
      */
     public function index()
     {
-        $product = Product::mightAlsoWanted(4);
-        return view('cart',['mightAlsoLike' =>$product]);
+        return view('checkout');
     }
 
     /**
@@ -37,35 +34,9 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        $duplicates = Cart::search(function($cartItem,$rowId) use ($request){
-            return $cartItem->id === $request->id;
-        });
-
-        if($duplicates->isNotEmpty()){
-            return redirect()->route('cart.index')->with('success-message','item already added');
-        }
-
-        Cart::add($request->id,$request->name,1,$request->price)->associate(Product::class);
-        return redirect()->route('cart.index')->with('success-message','item added to cart');
+        //
     }
 
-
-    public function switchToSave($id)
-    {
-        $item = Cart::get($id);
-        Cart::remove($id);
-
-        $duplicates = Cart::instance('saveForLater')->search(function($cartItem,$rowId) use ($id){
-            return $rowId === $id;
-        });
-
-        if($duplicates->isNotEmpty()){
-            return redirect()->route('cart.index')->with('success-message','item already in save for later');
-        }
-
-        Cart::instance('saveForLater')->add($item->id,$item->name,1,$item->price)->associate(Product::class);
-        return redirect()->route('cart.index')->with('success-message','item saved for later');
-    }
     /**
      * Display the specified resource.
      *
@@ -108,8 +79,6 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
-        Cart::remove($id);
-
-        return back()->with('success-message','item removed');
+        //
     }
 }

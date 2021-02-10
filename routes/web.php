@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\SaveToLaterController;
 use App\Http\Controllers\ShopController;
@@ -33,6 +34,7 @@ Route::post('/cart/SwitchSaveForLater/{product}',[CartController::class,'switchT
 Route::post('/saveForlater/{product}', [SaveToLaterController::class,'moveToCart'])->name('saveForlater.moveToCart');
 Route::delete('/saveForlater/{product}', [SaveToLaterController::class,'destroy'])->name('saveForlater.destroy');
 
+Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout.index');
 Route::view('/product', 'product');
-Route::view('/checkout', 'checkout');
+
 Route::view('/thankyou', 'thankyou');

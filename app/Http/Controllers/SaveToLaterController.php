@@ -82,26 +82,24 @@ class SaveToLaterController extends Controller
     public function destroy($id)
     {
         Cart::instance('saveForLater')->remove($id);
-
         return back()->with('success-message','item removed form save');
     }
 
 
     public function moveToCart($id)
     {
-
         $item = Cart::instance('saveForLater')->get($id);
         Cart::instance('saveForLater')->remove($id);
 
         $duplicates = Cart::search(function($cartItem,$rowId) use ($id){
-            return $rowId=== $id;
+            return $rowId == $id;
         });
-
         if($duplicates->isNotEmpty()){
             return redirect()->route('cart.index')->with('success-message','item already in Cart');
         }
 
         Cart::add($item->id,$item->name,1,$item->price)->associate(Product::class);
-        return redirect()->route('cart.index')->with('success-message','item saved to Cart');
+        return redirect()->back()->with('success-message','item moved to Cart');
+
     }
 }
