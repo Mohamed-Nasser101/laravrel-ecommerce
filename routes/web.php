@@ -35,6 +35,12 @@ Route::post('/saveForlater/{product}', [SaveToLaterController::class,'moveToCart
 Route::delete('/saveForlater/{product}', [SaveToLaterController::class,'destroy'])->name('saveForlater.destroy');
 
 Route::get('/checkout',[CheckoutController::class,'index'])->name('checkout.index');
-Route::view('/product', 'product');
+Route::post('/checkout',[CheckoutController::class,'store'])->name('checkout.store');
 
-Route::view('/thankyou', 'thankyou');
+
+Route::get('/thankyou', function(){
+    if(! session()->has('success_message')){
+        return redirect('/');
+    }
+    return view('thankyou');
+})->name('confirmation');
