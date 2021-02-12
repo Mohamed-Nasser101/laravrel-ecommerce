@@ -5,10 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Category;
 
 class Product extends Model
 {
     use HasFactory;
+
+    public function categories(){
+
+        return $this->belongsToMany(Category::class);
+    }
 
     public function presentPrice(){
         //return money_format('$%1',$this->price /100);
