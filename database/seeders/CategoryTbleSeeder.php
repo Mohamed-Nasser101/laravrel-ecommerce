@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use App\Models\Category;
 
-class CategoriesTbleSeeder extends Seeder
+class CategoryTbleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
