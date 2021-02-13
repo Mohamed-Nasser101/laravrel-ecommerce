@@ -9,9 +9,24 @@
 @endsection
 
 @section('content')
+        <div class="container">
+            @if (session()->has('success_message'))
+            <div class="spacer"></div>
+            <div class="alert alert-success">
+                {{ session()->get('success_message') }}
+            </div>
+        @endif
 
-    <div class="container">
-
+        @if(count($errors) > 0)
+            <div class="spacer"></div>
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <h1 class="checkout-heading stylish-heading">Checkout</h1>
         <div class="checkout-section">
             <div>
@@ -73,26 +88,6 @@
                         <!-- Used to display form errors -->
                         <div id="card-errors" role="alert"></div>
                     </div>
-                    {{-- <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" value="">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cc-number">Credit Card Number</label>
-                        <input type="text" class="form-control" id="cc-number" name="cc-number" value="">
-                    </div>
-
-                    <div class="half-form">
-                        <div class="form-group">
-                            <label for="expiry">Expiry</label>
-                            <input type="text" class="form-control" id="expiry" name="expiry" placeholder="MM/DD">
-                        </div>
-                        <div class="form-group">
-                            <label for="cvc">CVC Code</label>
-                            <input type="text" class="form-control" id="cvc" name="cvc" value="">
-                        </div>
-                    </div> <!-- end half-form --> --}}
 
                     <div class="spacer"></div>
 
@@ -133,21 +128,39 @@
                 <div class="checkout-totals">
                     <div class="checkout-totals-left">
                         Subtotal <br>
-                        {{-- Discount (10OFF - 10%) <br> --}}
+                        @if(session()->has('coupon'))
+                            Discount ({{ session()->get('coupon')['name'] }}):
+                            <a class="badge badge-secondary" href="" onclick="event.preventDefault();document.getElementById('removeCoupon').submit()">Remove</a><br>
+                            <form id="removeCoupon" action="{{ route('coupon.destroy',1)}}" method="post">
+                                @csrf
+                                @method('delete')
+                            </form>
+                        @endif
                         Tax <br>
                         <span class="checkout-totals-total">Total</span>
-
                     </div>
-
                     <div class="checkout-totals-right">
-                        {{ presentPrice(Cart::subtotal()) }} <br>
-                        {{-- -$750.00 <br> --}}
-                        {{ presentPrice(Cart::tax()) }} <br>
-                        <span class="checkout-totals-total">{{ presentPrice(Cart::total()) }}</span>
+                        {{ presentPrice($subtotal) }} <br>
+                        @if(session()->has('coupon'))
+                        -{{ presentPrice($discount) }} <br>
+                        @endif
+                        {{ presentPrice($tax) }} <br>
+                        <span class="checkout-totals-total">{{ presentPrice($total) }}</span>
 
                     </div>
                 </div> <!-- end checkout-totals -->
 
+                @if(! session()->has('coupon'))
+                 <a href="#" class="have-code">Have a Code?</a>
+
+                <div class="have-code-container">
+                    <form  method="post" action="{{ route('coupon.store') }}">
+                        @csrf
+                        <input type="text" name="coupon_code" id="coupon_code">
+                        <button type="submit" class="button button-plain">Apply</button>
+                    </form>
+                </div> <!-- end have-code-container -->
+                @endif
             </div>
 
         </div> <!-- end checkout-section -->

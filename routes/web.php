@@ -5,7 +5,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\SaveToLaterController;
 use App\Http\Controllers\ShopController;
-use Gloudemans\Shoppingcart\Facades\Cart;
+use App\Http\Controllers\CouponController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,3 +45,4 @@ Route::get('/thankyou', function(){
     }
     return view('thankyou');
 })->name('confirmation');
+Route::resource('coupon',CouponController::class)->only('store','destroy');

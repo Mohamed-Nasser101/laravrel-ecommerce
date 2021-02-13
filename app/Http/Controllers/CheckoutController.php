@@ -17,7 +17,12 @@ class CheckoutController extends Controller
      */
     public function index()
     {
-        return view('checkout');
+        return view('checkout')->with([
+            'subtotal' =>$this->getFinance()->get('subtotal'),
+            'discount' =>$this->getFinance()->get('discount'),
+            'tax'      =>$this->getFinance()->get('tax'),
+            'total'    =>$this->getFinance()->get('total')
+        ]);
     }
 
     /**
@@ -44,7 +49,7 @@ class CheckoutController extends Controller
 
         try {
             $charge = Stripe::charges()->create([
-                'amount' => Cart::total() / 100,
+                'amount' => $this->getFinance()->get('total') / 100,
                 'currency' => 'CAD',
                 'source' => 'tok_visa',   //$request->stripeToken  for testing
                 'description' => 'Order',
@@ -58,6 +63,7 @@ class CheckoutController extends Controller
 
             // SUCCESSFUL
             Cart::instance('default')->destroy();
+            session()->forget('coupon');
             return redirect()->route('confirmation')->with('success_message', 'Thank you! Your payment has been successfully accepted!');
         } catch (CardErrorException $e) {
             return back()->withErrors('Error! ' . $e->getMessage());
@@ -107,5 +113,22 @@ class CheckoutController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function getFinance(){
+        $subtotal = Cart::subtotal();
+        $discount = session()->get('coupon')['discount'] ?? 0 ;
+        $newsubtotal = $subtotal - $discount ;
+        $tax = $newsubtotal * (Config('cart.tax') / 100);
+        $total = $newsubtotal + $tax ;
+
+        return collect([
+            'subtotal' =>$subtotal,
+            'newsubtotal' => $newsubtotal,
+            'discount' =>$discount,
+            'tax'      =>$tax,
+            'total'    =>$total
+        ]);
+
     }
 }
