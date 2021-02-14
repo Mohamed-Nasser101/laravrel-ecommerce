@@ -7,6 +7,7 @@ use App\Http\Controllers\SaveToLaterController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CouponController;
 use Illuminate\Support\Facades\Route;
+use TCG\Voyager\Facades\Voyager;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,3 +47,8 @@ Route::get('/thankyou', function(){
     return view('thankyou');
 })->name('confirmation');
 Route::resource('coupon',CouponController::class)->only('store','destroy');
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+});
