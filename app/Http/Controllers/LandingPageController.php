@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class LandingPageController extends Controller
 {
+
+    public function __construct(){
+        //$this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
