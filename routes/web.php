@@ -49,9 +49,9 @@ Route::get('/thankyou', function(){
 Route::resource('coupon',CouponController::class)->only('store','destroy');
 
 
-Route::group(['prefix' => 'admin'], function () {
-    Voyager::routes();
-});
+// Route::group(['prefix' => 'admin'], function () {
+//     Voyager::routes();
+// });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
