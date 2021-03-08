@@ -20,7 +20,7 @@ class ShopController extends Controller
                 $q->where('slug',request()->category);
             })->get();
         }else{
-            $products = Product::inRandomOrder()->take(12)->get();  
+            $products = Product::inRandomOrder()->take(12)->paginate(12);
         }
 
         if(request()->sort === 'asc'){
@@ -46,9 +46,22 @@ class ShopController extends Controller
     {
         $product = Product::where('slug',$slug)->firstOrFail();
         $mightAlsoLike = Product::where('slug','!=',$slug)->mightAlsoWanted(4);
+
         return view('product',[
             'product' => $product,
-            'mightAlsoLike' => $mightAlsoLike
+            'mightAlsoLike' => $mightAlsoLike,
+            'status' => $product->quantity >= 10 ? 'in stock' : 'low stock'
             ]);
+    }
+
+    public function search(Request $request){
+        $request->validate([
+            'query' => 'required|min:3',
+        ]);
+
+        $query = $request->input('query');
+        $products = Product::where('name','like',"%$query%")->paginate(10);
+        //$products = Product::search($query)->paginate(10);
+        return view('search-results')->with('products',$products);
     }
 }

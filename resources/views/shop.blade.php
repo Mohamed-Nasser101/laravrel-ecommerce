@@ -8,13 +8,28 @@
 
 @section('content')
 
-    <div class="breadcrumbs">
-        <div class="container">
-            <a href="/">Home</a>
-            <i class="fa fa-chevron-right breadcrumb-separator"></i>
-            <span>Shop</span>
-        </div>
-    </div> <!-- end breadcrumbs -->
+    <x-breadcrumbs>
+        <a href="/">Home</a>
+        <i class="fa fa-chevron-right breadcrumb-separator"></i>
+        <span>Shop</span>
+    </x-breadcrumbs>
+    
+    <div class="container">
+        @if(session()->has('success-message'))
+            <div class='alert alert-success'>
+                {{ session()->get('success-message') }}
+            </div>
+        @endif
+        @if(count($errors) > 0)
+            <div class='alert alert-danger'>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+    </div>
 
     <div class="products-section container">
         <div class="sidebar">
@@ -36,10 +51,10 @@
         <div class="row">
             <div class="col-10"><h1 class="stylish-heading">{{ $categoryName }}</h1></div>
             <div class="col-2">
-                <a class="badge badge-success" href="{{ route('shop.index',['category' => request()->category,'sort' => 'asc']) }}">asc</a> | 
+                <a class="badge badge-success" href="{{ route('shop.index',['category' => request()->category,'sort' => 'asc']) }}">asc</a> |
                 <a class="badge badge-success" href="{{ route('shop.index',['category' => request()->category,'sort' => 'desc']) }}">desc</a>
             </div>
-        </div> 
+        </div>
             <div class="products text-center">
                 @forelse ($products as $product)
                 <div class="product">

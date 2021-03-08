@@ -40,7 +40,7 @@
             <div class="cart-table">
 
                 @foreach (Cart::content() as $item)
-                
+
                 <div class="cart-table-row">
                     <div class="cart-table-row-left">
                         <a href="{{ route('shop.show',$item->model->slug) }}"><img src="{{ asset('img/products/'.$item->model->slug.'.jpg')}}" alt="item" class="cart-table-img"></a>
@@ -64,7 +64,7 @@
                             </form>
                         </div>
                         <div>
-                            <select class="quantity" data-id="{{$item->rowId}}">
+                            <select class="quantity" data-id="{{$item->rowId}}" data-quantity="{{ $item->model->quantity }}">
                             @for ($i = 1; $i < 6; $i++)
                                 <option {{ $item->qty == $i ? 'selected' : '' }}>{{ $i }}</option>
                             @endfor
@@ -76,7 +76,7 @@
                 @endforeach
 
             </div> <!-- end cart-table -->
-            
+
             <div class="cart-totals">
                 <div class="cart-totals-left">
                     Shipping is free because we’re awesome like that. Also because that’s additional stuff I don’t feel like figuring out :).
@@ -175,8 +175,10 @@
         Array.from(classname).forEach(function(element){
             element.addEventListener('change',function(){
                 const id = element.getAttribute('data-id');
+                const quantity = element.getAttribute('data-quantity');
                 axios.patch(`/cart/${id}`, {
-                    quantity : this.value
+                    quantity : this.value,
+                    productQuantity : quantity
                     })
                     .then(function (response) {
                         window.location.href = "{{ route('cart.index') }}"

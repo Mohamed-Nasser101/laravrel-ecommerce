@@ -6,7 +6,9 @@ use Cartalyst\Stripe\Exception\CardErrorException;
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 use App\Http\Requests\CheckoutRequest;
+use App\Mail\Mailing;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -63,6 +65,7 @@ class CheckoutController extends Controller
 
             // SUCCESSFUL
             Cart::instance('default')->destroy();
+            //Mail::sned(new Mailing());
             session()->forget('coupon');
             return redirect()->route('confirmation')->with('success_message', 'Thank you! Your payment has been successfully accepted!');
         } catch (CardErrorException $e) {

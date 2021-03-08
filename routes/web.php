@@ -56,3 +56,5 @@ Route::resource('coupon',CouponController::class)->only('store','destroy');
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::get('/search',[ShopController::class,'search'])->name('search');
